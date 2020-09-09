@@ -1,0 +1,25 @@
+.infochunk{
+	position:relative;
+	left:100px;
+	top:-200px;
+	margin-left:200px;
+	
+	
+	
+}
+
+#headingprofile{
+	font-size:30px;
+	padding-left:40px;
+
+}
+#friendlink{
+	font-size:15px;
+}
+
+
+#userdp{
+	border-radius:100%;
+	width:270px;
+	height:270px;
+}

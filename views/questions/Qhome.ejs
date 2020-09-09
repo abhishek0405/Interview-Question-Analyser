@@ -1,0 +1,13 @@
+<%-include('../partials/header')%>
+<h1>
+	This is the main Qpage
+</h1>
+<a href="/logout">Logout</a>
+Welcome <%=CurrentUser.name%>
+
+<p></p>
+<a href="/user/<%=CurrentUser._id%>">Myprofile</a>
+<br>
+
+
+<%-include('../partials/footer')%>
