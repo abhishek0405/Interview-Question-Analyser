@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>questions page</title>
+
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="https://bootswatch.com/4/cyborg/bootstrap.min.css">
+
+</head>
+
+
+
+
+
+<a href="./<%- back %>" id="home" style="position:fixed;left:1200px;">Go back to view all questions</a>
+
+<div id="display">
+	Ore wa hono no renkinjutsushi - (Taisa is love <3)   		
+
+	<br><br>		
+
+	<% if(question!==undefined){ %>
+		<% for(var i=0; i< question.length; i++){ %>
+		<form>
+		
+
+			<%=  question[i].ques %>
+			<br><br>
+
+			<input type="radio" name="options<%- i %>" id="A" value="A">
+			<label for="A"><%= question[i].opt[0].option %></label>
+
+			<br>
+
+			<input type="radio" name="options<%- i %>" id="B" value="B">
+			<label for="B"><%= question[i].opt[1].option %></label>
+
+			<br>
+
+			<input type="radio" name="options<%- i %>" id="C" value="C">
+			<label for="C"><%= question[i].opt[2].option %></label>
+
+			<br>
+
+			<input type="radio" name="options<%- i %>" id="D" value="D">
+			<label for="D"><%= question[i].opt[3].option %></label>
+
+			<br>
+			<br>
+			<button type="submit"> Check </button>
+			<br><br>
+			<%= result[i] %>
+			<br><br>
+		
+			
+			<details>
+
+				<summary>
+					View answer
+				
+				</summary>
+				Option: <%= question[i].corrAns %>
+			</details>
+			<br><br>
+
+			
+
+		</form>
+		
+		<% } %>
+	<% } %>
+		
+		
+	</div>
+		

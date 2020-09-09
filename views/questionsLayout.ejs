@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>questions page</title>
+
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="https://bootswatch.com/4/cyborg/bootstrap.min.css">
+
+</head>
+<body>
+
+
+		<form id="filter" action="/questions/filter">
+			
+			<p>Filter by category: </p>
+			<input type="radio" id="easy" name="filtercat" value="easy">
+			  <label for="easy">Easy</label>
+
+			  <input type="radio" id="medium" name="filtercat" value="medium">
+			  <label for="medium">Medium</label>
+
+			  <input type="radio" id="hard" name="filtercat" value="hard">
+			  <label for="hard">Hard</label>
+
+			  <p>Filter by company: </p>
+			  <input type="radio" id="amazon" name="filtercomp" value="amazon">
+			  <label for="amazon">Amazon</label>
+
+			  <input type="radio" id="microsoft" name="filtercomp" value="microsoft">
+			  <label for="microsoft">Microsoft</label>
+
+			  <input type="radio" id="Capgemini" name="filtercomp" value="Capgemini">
+			  <label for="Capgemini">Capgemini</label>
+
+			  <input type="radio" id="infosys" name="filtercomp" value="infosys">
+			  <label for="infosys">Infosys</label>
+
+			  <input type="radio" id="TCS" name="filtercomp" value="TCS">
+			  <label for="TCS">TCS</label>
+
+
+			  <br>
+			  <button type="submit">Filter</a> </button>
+			  
+			  
+		</form>
+		<p><%= alert %></p>
+		
+		<div>
+		<% for(var i=0; i< question.length; i++){ %>
+		<form id="display">
+		
+
+			<%=  question[i].ques %>
+			<br><br>
+
+			<input type="radio" name="options<%- i %>" id="A" value="A">
+			<label for="A"><%= question[i].opt[0].option %></label>
+
+			<br>
+
+			<input type="radio" name="options<%- i %>" id="B" value="B">
+			<label for="B"><%= question[i].opt[1].option %></label>
+
+			<br>
+
+			<input type="radio" name="options<%- i %>" id="C" value="C">
+			<label for="C"><%= question[i].opt[2].option %></label>
+
+			<br>
+
+			<input type="radio" name="options<%- i %>" id="D" value="D">
+			<label for="D"><%= question[i].opt[3].option %></label>
+
+			<br>
+			<br>
+			<button type="submit"> Check </button>
+			<br><br>
+			
+			<p id="result"><%= result[i] %> </p>
+			<br><br>
+		
+			
+			<details>
+
+				<summary>
+					View answer
+				
+				</summary>
+				Option: <%= question[i].corrAns %>
+			</details>
+			<br><br>
+
+			
+
+		</form>
+		
+		<% } %>
+	</div>
+		
+
+
+</body>
+
+
+</html>

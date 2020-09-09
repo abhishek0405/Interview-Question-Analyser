@@ -185,6 +185,12 @@ app.get("/user/friend/remove/:id",function(req,res){
 });
 });
 			
+//require all controllers
+
+var questionsController = require('./models/questionsController');
+questionsController(app);
+
+
 
 
 app.listen(3000,function(){
