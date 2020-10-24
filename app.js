@@ -6,6 +6,9 @@ var app=express(),
 	LocalStrategy=require("passport-local"),
 	passportLocalMongoose=require("passport-local-mongoose"),
 	User = require('./models/user'),
+	Comment = require('./models/comments'),
+	Questionspath = require('./models/questionsController'),
+	Questions = Questionspath.Question;
  	fs   = require('fs'),
 	path = require('path');
     require('dotenv/config');
@@ -20,6 +23,21 @@ var storage = multer.diskStorage({
 }); 
 var upload = multer({ storage: storage }); 
 
+const MongoClient = require("mongodb").MongoClient;
+const ObjectId = require("mongodb").ObjectID;
+const uri = 'mongodb+srv://vishaka:Vishaka@cluster0.u0mor.mongodb.net/questions?retryWrites=true&w=majority';
+/*Comment.create({
+	text:"tada",
+	username:"abhu"
+},function(err,newcomment){
+	if(err){
+		console.log("could not create comment");
+	}
+	else{
+		console.log(newcomment);
+	}
+})
+*/
 
 /*User.remove({},function(err){
 	if(err){
@@ -37,8 +55,8 @@ function isLoggedIn(req,res,next){
 
 app.use(express('public'));
 app.set("view engine","ejs");
-
-mongoose.connect("mongodb://localhost/InterviewPrep",{ useNewUrlParser: true,useUnifiedTopology:true});
+mongoose.connect("mongodb+srv://vishaka:Vishaka@cluster0.u0mor.mongodb.net/questions?retryWrites=true&w=majority",{ useNewUrlParser: true, useUnifiedTopology: true});
+//mongoose.connect("mongodb://localhost/InterviewPrep",{ useNewUrlParser: true,useUnifiedTopology:true});
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -125,6 +143,7 @@ app.get('/logout',function(req,res){
 })
 
 app.get('/user/:id',isLoggedIn,function(req,res){
+	console.log(req.user);
 	User.findById(req.params.id).populate("friends").exec(function(err,foundUser){
 		if(err){
 			console.log(err);
@@ -189,6 +208,65 @@ app.get("/user/friend/remove/:id",function(req,res){
 
 var questionsController = require('./models/questionsController');
 questionsController(app);
+
+//COMMENT ROUTES HERE
+
+app.get('/discuss/:subject/:qid/comment/new',function(req,res){
+	var subject = req.params.subject;
+	var qid = req.params.qid;
+	res.render("comments/addcomment",{subject:subject,qid:qid});
+})
+
+app.post('/discuss/:subject/:qid/comment/new',function(req,res){
+	var client = new MongoClient(uri, { useNewUrlParser: true });
+	var subject = req.params.subject;
+	var qid = req.params.qid;
+	var id = mongoose.Types.ObjectId(qid);
+	client.connect(err => {
+		collection = client.db("questions").collection(subject);
+		console.log("success getting");
+		collection.find({_id:id}).toArray(function(err,foundq){
+		if(err){
+			console.log(err);
+		}
+		else{
+			var question = foundq[0];
+			//LOGIC TO ADD COMMENT TO COLLECTION AND USER ARRAY
+			var newcomment = {
+				text:req.body.text,
+				//author:req.body.author
+			}
+			Comment.create(newcomment,function(err,comm){
+				if(err){
+					console.log("err while adding comment");
+				}
+				else{
+					comm.author.id = req.user._id;
+					comm.author.username = req.user.username;
+					comm.save();
+					console.log(comm);
+				
+					collection.updateOne({_id:id},{ $push: {comments:comm}},function(err,comm){
+						if(err){
+							console.log(err);
+						}
+						else{
+							console.log("success");
+							res.redirect("/discuss/"+subject+"/"+qid);
+						}
+					});
+					client.close();	
+					
+				}
+			})
+			
+		}
+		
+		})
+})
+})
+
+
 
 
 

@@ -1,5 +1,7 @@
 
 var bodyParser = require('body-parser');
+var mongoose =require("mongoose"),
+	passportLocalMongoose=require("passport-local-mongoose");
 var urlencodedParser = bodyParser.urlencoded({extended: false});
 var mongoose = require('mongoose');
 const url = require('url');
@@ -9,6 +11,15 @@ const MongoClient = require("mongodb").MongoClient;
 const ObjectId = require("mongodb").ObjectID;
 const uri = 'mongodb+srv://vishaka:Vishaka@cluster0.u0mor.mongodb.net/questions?retryWrites=true&w=majority';
 
+function isLoggedIn(req,res,next){
+	if(req.isAuthenticated()){
+		return next();
+	}
+	else{
+		res.redirect('/login');
+	}
+}
+
 //create a schema 
 var quesSchema = new mongoose.Schema({
 	ques: String,
@@ -16,15 +27,29 @@ var quesSchema = new mongoose.Schema({
 	corrAns : String,
 	level : String,
 	company: String,
-	frequency: Number
+	frequency: Number,
+	comments:[
+		{
+			type:mongoose.Schema.Types.ObjectId,
+			ref:"comments"
+		}
+	]
 
 });
+
+
+//quesSchema.plugin(passportLocalMongoose);
+
 
 var Question = mongoose.model('Question', quesSchema);
 let getFrom;
 var cat;
 var comp;
 var dataNew;
+var qid;
+var id;
+
+module.exports =Question;
 
 
 //function to check options
@@ -43,7 +68,7 @@ function checkAnswer(req,  data){
 
 		if(data!== undefined)
 		{
-			console.log("hello bitch");
+			console.log("hello");
 			for(var i=0; i<data.length; i++)
 			{
 				
@@ -69,6 +94,32 @@ function checkAnswer(req,  data){
 
 }
 
+function retrievediscussion(req,res,client,collectionName,route,qid){
+	console.log("Quest to retrieve discussion");
+	client.connect(err => {
+    collection = client.db("questions").collection(collectionName);
+	console.log(collectionName);
+	console.log(qid);
+	 id = mongoose.Types.ObjectId(qid);
+	
+	//collection.find({_id:qid},function(err,foundq){
+	//collection.find({_id:id}).toArray(function(err,data){
+	//collection.find({},function(err,foundq){
+	collection.find({_id:id}).toArray(function(err,foundq){
+		if(err){
+			console.log(err);
+		}
+		else{
+			console.log(foundq);
+			
+			res.render("./questions/qdiscuss",{foundq:foundq[0],subject:collectionName});
+		}
+	})
+    // perform actions on the collection object
+    client.close();
+});
+}
+
 
 
 
@@ -90,7 +141,7 @@ function retrieveQuestions(req, res, client, collectionName, route)
 
 							var result = checkAnswer(req, data);
 		
-							res.render(route, {question : data, result : result, alert:""});
+							res.render(route, {question : data, result : result, alert:"",subject:collectionName});
 
 						});
 			
@@ -127,7 +178,7 @@ function retrieve(req, res, client, getFrom, route, back)
 						var result = checkAnswer(req, data);
 						console.log(result);
 						
-						res.render('./questionsNew.ejs', {question : data, result : result, back:back});
+						res.render('./questions/questionsNew.ejs', {question : data, result : result, back:back,subject:getFrom});
 	
 													
 					
@@ -154,7 +205,7 @@ function retrieve(req, res, client, getFrom, route, back)
 						var result = checkAnswer(req, data);
 						console.log(result);
 						
-						res.render('./questionsNew.ejs', {question : data, result : result, back:back});
+						res.render('./questions/questionsNew.ejs', {question : data, result : result, back:back,subject:getFrom});
 						
 					
 					});
@@ -180,7 +231,7 @@ function retrieve(req, res, client, getFrom, route, back)
 						var result = checkAnswer(req, data);
 						console.log(result);
 						
-						res.render('./questionsNew.ejs', {question : data, result : result, back:back});
+						res.render('./questions/questionsNew.ejs', {question : data, result : result, back:back,subject:getFrom});
 	
 													
 					
@@ -227,72 +278,72 @@ module.exports = function(app){
 	app.use(bodyParser.json());
 
 
-	app.get('/questions/dbms', function(req,res){
+	app.get('/questions/dbms',isLoggedIn,function(req,res){
 
 		
 		var client1 = new MongoClient(uri, { useNewUrlParser: true});
 		getFrom = "dbms";
 		
-		retrieveQuestions(req, res, client1, "dbms", './questionsDbms.ejs');
+		retrieveQuestions(req, res, client1, "dbms", './questions/questionsDbms.ejs');
 
 	});
 		
 	
 
 
-	app.get('/questions/os', function(req,res){
+	app.get('/questions/os',isLoggedIn, function(req,res){
 
 		var client3 = new MongoClient(uri, { useNewUrlParser: true});
 		getFrom ="os";
 		
-		retrieveQuestions(req, res, client3,  "os", './questionsOs.ejs');
+		retrieveQuestions(req, res, client3,  "os", './questions/questionsOs.ejs');
 		
 		
 	});
 
 
 
-	app.get('/questions/network', function(req,res){
+	app.get('/questions/network',isLoggedIn, function(req,res){
 
 		var client5 = new MongoClient(uri, { useNewUrlParser: true});
 		getFrom = "network";
 		
-		retrieveQuestions(req, res, client5,  "network", './questionsNetwork.ejs');
+		retrieveQuestions(req, res, client5,  "network", './questions/questionsNetwork.ejs');
 
 	});
 
 
 
-	app.get('/questions/dsa', function(req,res){
+	app.get('/questions/dsa',isLoggedIn, function(req,res){
 
 		var client4 = new MongoClient(uri, { useNewUrlParser: true});
 		getFrom = "dsa";
 		
-		retrieveQuestions(req, res, client4, "dsa", './questionsDsa.ejs');
+		retrieveQuestions(req, res, client4, "dsa", './questions/questionsDsa.ejs');
 		
 	});
 
 
 
-	app.get('/questions/aptitude', function(req,res){
+	app.get('/questions/aptitude',isLoggedIn, function(req,res){
 
 		var client2 = new MongoClient(uri, { useNewUrlParser: true});
 		getFrom = "aptitude";
 		
-		retrieveQuestions(req, res, client2, "aptitude", './questionsAptitude.ejs');
+		retrieveQuestions(req, res, client2, "aptitude", './questions/questionsAptitude.ejs');
 		
 	});
 
 
 
-	app.get('/question', function(req,res){
+	app.get('/question',isLoggedIn, function(req,res){
 
-		res.render('./questionsMainPage.ejs');
+		res.render('./questions/questionsMainPage.ejs');
 
 
 	});
 
-	app.get('/questions/filter', function(req, res){
+	app.get('/questions/filter',isLoggedIn, function(req, res){
 
 		var client = new MongoClient(uri, { useNewUrlParser: true});
 		console.log(req.query);
@@ -313,15 +364,30 @@ module.exports = function(app){
 		console.log(comp);
 		console.log(getFrom);*/
 		
-		retrieve(req, res, client, getFrom, './questionsNew.ejs', getFrom);
+		retrieve(req, res, client, getFrom, './questions/questionsNew.ejs', getFrom);
 
 	});
+	
+	app.get("/discuss/:subject/:qid",isLoggedIn,function(req,res){
+
+		var client = new MongoClient(uri, { useNewUrlParser: true });
+		getfrom = req.params.subject;
+		var qid = req.params.qid;
+		console.log(getfrom);
+		console.log(qid);
+		retrievediscussion(req,res,client,getfrom,'./questions/discuss.ejs',qid);
+
+	
+});
+	
+	
+	
 
 
 
-	app.get('/questions/new', function(req, res){
+	app.get('/questions/new',isLoggedIn, function(req, res){
 
-		res.render('./addNewquestions.ejs');
+		res.render('./questions/addNewquestions.ejs');
 
 	});
 
@@ -338,7 +404,8 @@ module.exports = function(app){
 						corrAns: data.correct, 
 						level: data.level, 
 						company: data.company, 
-						frequency: data.frequency 
+						frequency: data.frequency,
+						comments:[]
 					});
 
 			
@@ -376,7 +443,7 @@ module.exports = function(app){
 			postTo(client5, "network", newQues);
 		}
 		
-        res.render("./addNewquestions.ejs");
+        res.render("./questions/addNewquestions.ejs");
         
 
 	});

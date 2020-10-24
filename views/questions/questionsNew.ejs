@@ -10,19 +10,20 @@
 
 
 <link rel="stylesheet" type="text/css" href="https://bootswatch.com/4/cyborg/bootstrap.min.css">
-
+<link rel="stylesheet" href="/stylesheets/app.css">
 </head>
 
 
 
 
-
+<body class="qlayoutbody">
+	
+	
 <a href="./<%- back %>" id="home" style="position:fixed;left:1200px;">Go back to view all questions</a>
 
 <div id="display">
-	Ore wa hono no renkinjutsushi - (Taisa is love <3)   		
-
-	<br><br>		
+	
+	<br>
 
 	<% if(question!==undefined){ %>
 		<% for(var i=0; i< question.length; i++){ %>
@@ -67,6 +68,7 @@
 				Option: <%= question[i].corrAns %>
 			</details>
 			<br><br>
+			<a href="/discuss/<%=subject%>/<%=question[i]._id%>">Open Discussion Panel</a>
 
 			
 
@@ -77,4 +79,6 @@
 		
 		
 	</div>
+	</body>
+</html>
 		
