@@ -23,8 +23,14 @@
 }
 
 .qlayoutbody{
-	background:white;
+	background:rgba(152, 220, 216,0.4);
 	color:black;
+  font-family: "Lucida Console", Courier, monospace;
+  font-size: 110%;
+}
+.radio {
+  font-size: 2.25rem;
+  
 }
 
 #headingcent{

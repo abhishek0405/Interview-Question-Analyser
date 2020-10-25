@@ -29,7 +29,7 @@
 			Subject:<%=subject%>
 	</h2>
 		<br>
-		<form id="filter" action="/questions/filter">
+		<form id="filter" action="/questions/filter/<%=CurrentUser._id%>">
 			
 			<p>Filter by category: </p>
 			<input type="radio" id="easy" name="filtercat" value="easy">
@@ -64,10 +64,10 @@
 			  
 		</form>
 		<p><%= alert %></p>
-		
+		<br><br>
 		<div>
 		<% for(var i=0; i< question.length; i++){ %>
-		<form id="display">
+		<form id="display" action="/<%-getFrom-%>/<%=CurrentUser._id%>">
 		
 
 			<%=  question[i].ques %>
@@ -93,22 +93,18 @@
 
 			<br>
 			<br>
+
+			<label for="view" >View answer</label>
+			<input type="radio" value="<%- question[i]._id-%>" class="view" name="view" onclick="document.getElementById('ans<%- i -%>').innerHTML = '<%- question[i].corrAns-%>'">
+
+			<p id="ans<%- i -%>"></p>
+			<br>
 			<button type="submit"> Check </button>
 			<br><br>
 			
 			<p id="result"><%= result[i] %> </p>
 			<br><br>
 		
-			
-			<details>
-
-				<summary>
-					View answer
-				
-				</summary>
-				Option: <%= question[i].corrAns %>
-			</details>
-			<br>
 			<!-- Button trigger modal -->
 
 <!-- Button trigger modal -->

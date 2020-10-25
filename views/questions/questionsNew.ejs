@@ -19,7 +19,7 @@
 <body class="qlayoutbody">
 	
 	
-<a href="./<%- back %>" id="home" style="position:fixed;left:1200px;">Go back to view all questions</a>
+<a href="/<%-back%>/<%=CurrentUser._id%>" id="home" style="position:fixed;left:1200px;">Go back to view all questions</a>
 
 <div id="display">
 	
@@ -53,20 +53,20 @@
 
 			<br>
 			<br>
-			<button type="submit"> Check </button>
+				<p>View answer</p>
+			<input type="radio" value="<%- question[i]._id-%>" class="view" name="view" onclick="document.getElementById('ans<%- i -%>').innerHTML = '<%- question[i].corrAns-%>'">
+			<label for="view" hidden>view</label>
+
+			<p id="ans<%- i -%>"></p>
+			<br><br>
+			<button type="submit"> 
+			Check </button>
 			<br><br>
 			<%= result[i] %>
 			<br><br>
 		
 			
-			<details>
-
-				<summary>
-					View answer
-				
-				</summary>
-				Option: <%= question[i].corrAns %>
-			</details>
+			
 			<br><br>
 			<a href="/discuss/<%=subject%>/<%=question[i]._id%>">Open Discussion Panel</a>
 

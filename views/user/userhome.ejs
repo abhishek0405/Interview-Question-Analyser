@@ -30,7 +30,7 @@
   <li class="list-group-item list-group-item-success">name:<%=user.name%></li>
   <li class="list-group-item list-group-item-warning">username:<%=user.username%></li>
   <li class="list-group-item list-group-item-success">easycount:<%=user.easycount%></li>
-  <li class="list-group-item list-group-item-warning">easycount:<%=user.midcount%></li>
+  <li class="list-group-item list-group-item-warning">mediumcount:<%=user.midcount%></li>
   <li class="list-group-item list-group-item-success">hardcount:<%=user.hardcount%></li>
   <li class="list-group-item list-group-item-warning">totalcount:<%=user.totalcount%></li>
   <li class="list-group-item list-group-item-success">rating:<%=user.rating%></li>
@@ -64,7 +64,7 @@ friends:
 <%})%>
 		</div>
 -->
-
+<a href="/user/<%-CurrentUser._id-%>/ranklist">Know where you stand among friends</a>
 </div>
 
 <%-include('../partials/footer')%>
